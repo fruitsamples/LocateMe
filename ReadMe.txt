@@ -1,66 +1,58 @@
-### LocateMe ###
+LocateMe
 
 ================================================================================
-DESCRIPTION:
+ABSTRACT:
 
-The LocateMe application demonstrates how to use the CLLocationManager class to determine the user's current location. It demonstrates starting and stopping updates, error handling, and changing location parameters.
+This demonstrates the two primary use cases for the Core Location Framework: getting the user's location and tracking changes to the user's location. Developers should read the class reference documentation for CLLocationManager, CLLocationManagerDelegate, and CLLocation for detailed information about the Core Location framework. In addition, the iPhone Application Programming Guide has a section under "Device Support", titled "Getting the User's Current Location", which discusses best practices for using this framework.
 
-The most important class in this application is MyCLController. This class conforms to the CLLocationManagerDelegate protocol so that it receives updates from CoreLocation. It also uses a simple protocol of its own (MyCLControllerDelegate) to send text to the MainViewController so that the text can be displayed.
+Important Considerations:
 
-The FlipSideViewController shows how to get and set options in the CLLocationManager, using the properties of the MyCLController wrapper class.
+• Core Location does not guarantee that a measurement matching the desiredAccuracy will be delivered. Rather, a best effort is made, and may be constrained both by the capabilities of the device and the location and environment from which it is used. For example, a first generation iPod touch may only be able to provide location via WiFi triangulation, which in turn might give better than 100-meter accuracy. However, used in a location which lacks WiFi hotspots, no location at all could be acquired. Similarly, a GPS equiped device will often provide better than 10-meter accuracy, but not underground. Your code should be prepared to handle any of these possibilities. In particular, a timeout should be used to stop updating the location manager even if a measurement meeting the desired is not received. A reasonable timeout is around 30 seconds.
 
-The MainViewController shows how to check if LocationServices are available, using the locationServicesEnabled property of the CLLocationManager class. See the viewDidLoad method for more info.
+• Core Location caches location data, so it is typical that the first measurement the location manager's delegate receives is "stale". You should always check the timestamp on measurement objects to determine if they are likely to be out-of-date.
 
-Notes:
+• When tracking changes to the user's location, the distanceFilter property can be used to filter out update messages from the location manager to it's delegate. However, such messages may still be delivered if more accurate measurements are acquired. Also, the distanceFilter does not impact the hardware's activity - i.e., there is no savings of power by setting a larger distanceFilter because the hardware continues to acquire measurements. This simply affects whether those measurements are passed on to the location manager's delegate. Power can only be saved by turning off the location manager.
 
-Even if you have the distance filter set, you may still get updates whenever the accuracy improves, even if the new coordinates are not outside your specified distance.
+What to Look For in this Project:
 
-Updates can sometimes be reported with timestamps that are not in chronological order. See the note in MyCLController.m for more info. In general, clients will be interested in whichever measurement is the most accurate.
-
-Also note that you can sometimes get updates with timestamps prior to the time that the application was launched. This is just the most recent location data available. More updates will come in as the application runs.
+The most important location handling code is in the GetLocationViewController and TrackLocationViewController. "#pragma mark Location Manager Interactions" is used to demarcate the specific sections that create, configure, start, and stop the manager, and where its delegate methods are implemented. 
 
 ================================================================================
 BUILD REQUIREMENTS:
 
-Mac OS X v10.5.3, Xcode 3.1, iPhone OS 2.0
+iPhone SDK 3.0
 
 ================================================================================
 RUNTIME REQUIREMENTS:
 
-Mac OS X v10.5.3, iPhone OS 2.0
+iPhone OS 3.0
 
 ================================================================================
 PACKAGING LIST:
 
-MainViewController.h
-MainViewControler.m
-Controller class for the "main" view (visible at app start).
+AppDelegate
+The application delegate has a minimal role in this sample: in -applicationDidFinishLaunching: it adds the tab bar controller's view to the window. It also creates a CLLocationManager object to check the locationServicesEnabled property at launch time.
 
-FlipsideViewController.h
-FlipsideViewController.m
-Controller class for the "flipside" view, which contains all the controls for settings.
+GetLocationViewController
+Attempts to acquire a location measurement with a specific level of accuracy. A timeout is used to avoid wasting power in the case where a sufficiently accurate measurement cannot be acquired. Presents a SetupViewController instance so the user can configure the desired accuracy and timeout. Uses a LocationDetailViewController instance to drill down into details for a given location measurement.
 
-AccuracyPickerItem.h
-AccuracyPickerItem.m
-Helper class for the UIPicker in the flipside view. Each object contains a CLLocationAccuracy value and a description string.
+TrackLocationViewController
+Attempts to track the user location with a specific level of accuracy. A "distance filter" indicates the smallest change in location that triggers an update from the location manager to its delegate. Presents a SetupViewController instance so the user can configure the desired accuracy and distance filter. Uses a LocationDetailViewController instance to drill down into details for a given location measurement.
 
-LocateMeAppDelegate.h
-LocateMeAppDelegate.m
-App delegate. Creates window and root view
+SetupViewController
+Displayed by either a GetLocationViewController or a TrackLocationViewController, this view controller is presented modally and communicates back to the presenting controller using a simple delegate protocol. The protocol sends setupViewController:didFinishSetupWithInfo: to its delegate with a dictionary containing a desired accuracy and either a timeout or a distance filter value. A custom UIPickerView specifies the desired accuracy. A slider is shown for setting the timeout or distance filter. This view controller can be initialized using either of two nib files: GetLocationSetupView.xib or TrackLocationSetupView.xib. These nibs have nearly identical layouts, but differ in the labels and attributes for the slider.
 
-RootViewController.h
-RootViewController.m
-Root view used to flip between main and reverse views. Subviews use delegates to tell this view when to flip between them.
+LocationDetailViewController
+Shows all of the properties of a CLLocation object in a table view. Uses the CLLocation (Strings) category to present the information as localized strings.
 
-MyCLController.h
-MyClController.m
-Singleton class used to talk to CoreLocation and send results back to the app's view controllers.
-
-main.m
-The main entry point for the LocateMe application.
+CLLocation (Strings)
+This is an Objective C category on the CLLocation class that extends the class by adding some convenience methods for presenting localized string representations of various properties.
 
 ================================================================================
 CHANGES FROM PREVIOUS VERSIONS:
+
+Version 2.0 
+Complete rewrite to focus separately on two primary use cases - getting a single location and tracking location changes.
 
 Version 1.1
 - Updated for and tested with iPhone OS 2.0. First public release.
@@ -70,4 +62,4 @@ Version 1.0
 - First version.
 
 ================================================================================
-Copyright (C) 2008 Apple Inc. All rights reserved.
+Copyright (C) 2008-2009 Apple Inc. All rights reserved.
