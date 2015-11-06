@@ -20,12 +20,12 @@ The most important location handling code is in the GetLocationViewController an
 ================================================================================
 BUILD REQUIREMENTS:
 
-iPhone SDK 3.0
+iOS 4.0 or later
 
 ================================================================================
 RUNTIME REQUIREMENTS:
 
-iPhone OS 3.0
+iPhone OS 3.2 or later
 
 ================================================================================
 PACKAGING LIST:
@@ -51,8 +51,11 @@ This is an Objective C category on the CLLocation class that extends the class b
 ================================================================================
 CHANGES FROM PREVIOUS VERSIONS:
 
+Version 2.2
+- Updated for iOS 4.0.
+
 Version 2.0 
-Complete rewrite to focus separately on two primary use cases - getting a single location and tracking location changes.
+- Complete rewrite to focus separately on two primary use cases - getting a single location and tracking location changes.
 
 Version 1.1
 - Updated for and tested with iPhone OS 2.0. First public release.
@@ -62,4 +65,4 @@ Version 1.0
 - First version.
 
 ================================================================================
-Copyright (C) 2008-2009 Apple Inc. All rights reserved.
+Copyright (C) 2008-2010 Apple Inc. All rights reserved.
