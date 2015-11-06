@@ -2,7 +2,7 @@
      File: CLLocation (Strings).m
  Abstract: This is an Objective C category on the CLLocation class that extends the class by adding some convenience methods for presenting localized string representations of various properties.
  
-  Version: 2.0
+  Version: 2.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
